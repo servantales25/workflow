@@ -2,7 +2,7 @@
 
 namespace LuKun\Workflow\Events;
 
-class EventBus
+class EventBus implements IEventBus
 {
     /** @var IEventHandlerLocator */
     private $handlerLocator;
