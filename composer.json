@@ -1,0 +1,30 @@
+{
+    "name": "lukun/workflow",
+    "license": "proprietary",
+    "type": "library",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Lukáš Kún",
+            "email": "lukaskun@seznam.cz"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../Structures"
+        }
+    ],
+    "require": {
+        "lukun/structures": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "LuKun\\Workflow\\": "src/",
+            "LuKun\\Workflow\\Tests\\": "tests/"
+        }
+    }
+}
