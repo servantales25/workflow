@@ -1,8 +1,8 @@
 {
     "name": "lukun/workflow",
-    "license": "proprietary",
+    "license": "MIT",
     "type": "library",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "authors": [
         {
             "name": "Lukáš Kún",
@@ -11,12 +11,12 @@
     ],
     "repositories": [
         {
-            "type": "path",
-            "url": "../Structures"
+            "type": "vcs",
+            "url": "https://github.com/servantales25/structures.git"
         }
     ],
     "require": {
-        "lukun/structures": "*"
+        "lukun/structures": "^0.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1"
