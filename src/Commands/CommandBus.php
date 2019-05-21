@@ -4,7 +4,7 @@ namespace LuKun\Workflow\Commands;
 
 use LuKun\Structures\Collections\Vector;
 
-class CommandBus
+class CommandBus implements ICommandBus
 {
     /** @var ICommandHandlerLocator */
     private $handlerLocator;
