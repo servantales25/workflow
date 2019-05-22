@@ -4,7 +4,7 @@ namespace LuKun\Workflow\Domain;
 
 use LuKun\Structures\Collections\Vector;
 
-abstract class AggregateEntity extends Entity
+abstract class Aggregate extends Entity
 {
     /** @var Vector */
     private $events;

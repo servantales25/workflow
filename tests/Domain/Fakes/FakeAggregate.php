@@ -2,10 +2,10 @@
 
 namespace LuKun\Workflow\Tests\Domain\Fakes;
 
-use LuKun\Workflow\Domain\AggregateEntity;
+use LuKun\Workflow\Domain\Aggregate;
 use LuKun\Workflow\Domain\IIdentity;
 
-class FakeAggregateEntity extends AggregateEntity
+class FakeAggregate extends Aggregate
 {
     public function __construct(IIdentity $identity)
     {

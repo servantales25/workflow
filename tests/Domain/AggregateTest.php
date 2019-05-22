@@ -3,17 +3,17 @@
 namespace LuKun\Workflow\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
-use LuKun\Workflow\Tests\Domain\Fakes\FakeAggregateEntity;
+use LuKun\Workflow\Tests\Domain\Fakes\FakeAggregate;
 use LuKun\Workflow\Tests\Domain\Fakes\FakeIdentity;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent2;
 
-class AggregateEntityTest extends TestCase
+class AggregateTest extends TestCase
 {
     public function test_collect()
     {
         $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregateEntity($identity);
+        $aggregate = new FakeAggregate($identity);
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
@@ -32,7 +32,7 @@ class AggregateEntityTest extends TestCase
     public function test_dropEvents()
     {
         $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregateEntity($identity);
+        $aggregate = new FakeAggregate($identity);
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
@@ -52,7 +52,7 @@ class AggregateEntityTest extends TestCase
     public function test_isModified_WithoutEvents()
     {
         $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregateEntity($identity);
+        $aggregate = new FakeAggregate($identity);
 
         $modified = $aggregate->isModified();
 
@@ -62,7 +62,7 @@ class AggregateEntityTest extends TestCase
     public function test_isModified_WithEvents()
     {
         $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregateEntity($identity);
+        $aggregate = new FakeAggregate($identity);
         $event = new FakeEvent();
 
         $aggregate->collect($event);
@@ -75,7 +75,7 @@ class AggregateEntityTest extends TestCase
     public function test_isModified_AfterDropEvents()
     {
         $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregateEntity($identity);
+        $aggregate = new FakeAggregate($identity);
         $event = new FakeEvent();
 
         $aggregate->collect($event);
