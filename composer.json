@@ -2,7 +2,7 @@
     "name": "lukun/workflow",
     "license": "MIT",
     "type": "library",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "authors": [
         {
             "name": "Lukáš Kún",
@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "lukun/structures": "^0.1.0"
+        "lukun/structures": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1"
