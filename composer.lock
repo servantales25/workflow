@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c950bae8c1a828617d5a898736056fd9",
+    "content-hash": "c561d0768056adbf9b6acbeb069e0bfc",
     "packages": [
         {
             "name": "lukun/structures",
-            "version": "0.1.0",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/servantales25/structures.git",
-                "reference": "fe9bea161b6551054716cd7037d0c7bb1fdeba6f"
+                "reference": "90b981fecd7d56a072d36feab88d7486f3590fea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/servantales25/structures/zipball/fe9bea161b6551054716cd7037d0c7bb1fdeba6f",
-                "reference": "fe9bea161b6551054716cd7037d0c7bb1fdeba6f",
+                "url": "https://api.github.com/repos/servantales25/structures/zipball/90b981fecd7d56a072d36feab88d7486f3590fea",
+                "reference": "90b981fecd7d56a072d36feab88d7486f3590fea",
                 "shasum": ""
             },
             "require-dev": {
@@ -40,10 +40,10 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/servantales25/structures/tree/v0.1.0",
+                "source": "https://github.com/servantales25/structures/tree/v1",
                 "issues": "https://github.com/servantales25/structures/issues"
             },
-            "time": "2019-05-21T09:22:29+00:00"
+            "time": "2019-05-22T08:50:37+00:00"
         }
     ],
     "packages-dev": [
