@@ -20,6 +20,8 @@ abstract class Entity
 
     public function equalsTo(Entity $entity): bool
     {
-        return $this->identity->equalsTo($entity->identity);
+        $class = get_class($this);
+        return $entity instanceof $class
+            && $this->identity->equalsTo($entity->identity);
     }
 }

@@ -21,14 +21,10 @@ abstract class Aggregate extends Entity
         return !$this->events->isEmpty();
     }
 
-    /** @param callable $handleEvent (object $event): void */
-    public function readEvents(callable $handleEvent): void
+    /** @param callable $processEvent - (object $event): void */
+    public function processEvents(callable $processEvent): void
     {
-        $this->events->walk($handleEvent);
-    }
-
-    public function dropEvents(): void
-    {
+        $this->events->walk($processEvent);
         $this->events->clear();
     }
 

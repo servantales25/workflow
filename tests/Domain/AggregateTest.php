@@ -21,7 +21,7 @@ class AggregateTest extends TestCase
         $aggregate->collect($event2);
 
         $readEvents = [];
-        $aggregate->readEvents(function ($event) use (&$readEvents) {
+        $aggregate->processEvents(function ($event) use (&$readEvents) {
             array_push($readEvents, $event);
         });
 
@@ -29,7 +29,7 @@ class AggregateTest extends TestCase
         $this->assertSame($expectedEvents, $readEvents);
     }
 
-    public function test_dropEvents()
+    public function test_processEvents_MultipleTimes()
     {
         $identity = new FakeIdentity(20);
         $aggregate = new FakeAggregate($identity);
@@ -38,15 +38,17 @@ class AggregateTest extends TestCase
 
         $aggregate->collect($event1);
         $aggregate->collect($event2);
-        $aggregate->dropEvents();
 
         $readEvents = [];
-        $aggregate->readEvents(function ($event) use (&$readEvents) {
+        $aggregate->processEvents(function () { });
+        $aggregate->processEvents(function ($event) use (&$readEvents) {
             array_push($readEvents, $event);
         });
+        $modified = $aggregate->isModified();
 
         $expectedEvents = [];
         $this->assertSame($expectedEvents, $readEvents);
+        $this->assertFalse($modified);
     }
 
     public function test_isModified_WithoutEvents()
@@ -70,19 +72,5 @@ class AggregateTest extends TestCase
         $modified = $aggregate->isModified();
 
         $this->assertTrue($modified);
-    }
-
-    public function test_isModified_AfterDropEvents()
-    {
-        $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregate($identity);
-        $event = new FakeEvent();
-
-        $aggregate->collect($event);
-        $aggregate->dropEvents();
-
-        $modified = $aggregate->isModified();
-
-        $this->assertFalse($modified);
     }
 }
