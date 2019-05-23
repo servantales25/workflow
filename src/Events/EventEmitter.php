@@ -4,33 +4,34 @@ namespace LuKun\Workflow\Events;
 
 use LuKun\Structures\Collections\HashTable;
 
-abstract class EventEmitter
+class EventEmitter implements IEventEmitter
 {
     /** @var HashTable */
     private $eventHandlers;
 
-    protected function __construct()
+    public function __construct()
     {
         $this->eventHandlers = new HashTable();
     }
 
-    public function on(string $eventClass, callable $eventHandler): void
+    /** @param callable $eventHandler - (...$args): void */
+    public function on(string $event, callable $eventHandler): void
     {
-        if (!$this->eventHandlers->containsOf($eventClass, $eventHandler)) {
-            $this->eventHandlers->addTo($eventClass, $eventHandler);
+        if (!$this->eventHandlers->containsOf($event, $eventHandler)) {
+            $this->eventHandlers->addTo($event, $eventHandler);
         }
     }
 
-    public function off(string $eventClass, callable $eventHandler): void
+    /** @param callable $eventHandler - (...$args): void */
+    public function off(string $event, callable $eventHandler): void
     {
-        $this->eventHandlers->removeOf($eventClass, $eventHandler);
+        $this->eventHandlers->removeOf($event, $eventHandler);
     }
 
-    protected function emit(object $event): void
+    public function emit(string $event, ...$args): void
     {
-        $eventClass = get_class($event);
-        $this->eventHandlers->walkOf($eventClass, function (callable $handler) use ($event) {
-            $handler($event);
+        $this->eventHandlers->walkOf($event, function (callable $handler) use ($args) {
+            $handler(...$args);
         });
     }
 }

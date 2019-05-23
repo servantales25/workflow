@@ -53,6 +53,23 @@ class ResultBuilderTest extends TestCase
         $this->assertSame([$event1, $event2], $readEvents);
     }
 
+    public function test_addEvents()
+    {
+        $event1 = new stdClass();
+        $event2 = new stdClass();
+
+        $readEvents = [];
+
+        $this->builder->addEvents([$event1, $event2]);
+
+        $result = $this->builder->getResult();
+        $result->readEvents(function ($event) use (&$readEvents) {
+            array_push($readEvents, $event);
+        });
+
+        $this->assertSame([$event1, $event2], $readEvents);
+    }
+
     public function test_addResult()
     {
         $error1 = new stdClass();

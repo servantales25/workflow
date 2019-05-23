@@ -25,6 +25,11 @@ class ResultBuilder
         array_push($this->events, $event);
     }
 
+    public function addEvents(array $events): void
+    {
+        $this->events = array_merge($this->events, $events);
+    }
+
     public function addResult(Result $result): void
     {
         $result->readErrors([$this, 'addError']);

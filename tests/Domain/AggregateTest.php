@@ -10,67 +10,28 @@ use LuKun\Workflow\Tests\Events\Fakes\FakeEvent2;
 
 class AggregateTest extends TestCase
 {
-    public function test_collect()
+    public function test_onChange()
     {
         $identity = new FakeIdentity(20);
         $aggregate = new FakeAggregate($identity);
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
-        $aggregate->collectEvent($event1);
-        $aggregate->collectEvent($event2);
+        $onChangeArg1 = null;
+        $onChangeArg2 = null;
 
-        $readEvents = [];
-        $aggregate->processEvents(function ($event) use (&$readEvents) {
-            array_push($readEvents, $event);
+        $aggregate->onChange(function ($arggregate, $event) use (&$onChangeArg1, &$onChangeArg2) {
+            $onChangeArg1 = $arggregate;
+            $onChangeArg2 = $event;
         });
 
-        $expectedEvents = [$event1, $event2];
-        $this->assertSame($expectedEvents, $readEvents);
-    }
+        $aggregate->publishChange($event1);
 
-    public function test_processEvents_MultipleTimes()
-    {
-        $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregate($identity);
-        $event1 = new FakeEvent();
-        $event2 = new FakeEvent2();
+        $this->assertSame($aggregate, $onChangeArg1);
+        $this->assertSame($event1, $onChangeArg2);
 
-        $aggregate->collectEvent($event1);
-        $aggregate->collectEvent($event2);
+        $aggregate->publishChange($event2);
 
-        $readEvents = [];
-        $aggregate->processEvents(function () { });
-        $aggregate->processEvents(function ($event) use (&$readEvents) {
-            array_push($readEvents, $event);
-        });
-        $modified = $aggregate->hasUnprocessedEvents();
-
-        $expectedEvents = [];
-        $this->assertSame($expectedEvents, $readEvents);
-        $this->assertFalse($modified);
-    }
-
-    public function test_isModified_WithoutEvents()
-    {
-        $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregate($identity);
-
-        $modified = $aggregate->hasUnprocessedEvents();
-
-        $this->assertFalse($modified);
-    }
-
-    public function test_isModified_WithEvents()
-    {
-        $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregate($identity);
-        $event = new FakeEvent();
-
-        $aggregate->collectEvent($event);
-
-        $modified = $aggregate->hasUnprocessedEvents();
-
-        $this->assertTrue($modified);
+        $this->assertSame($event2, $onChangeArg2);
     }
 }
