@@ -17,8 +17,8 @@ class AggregateTest extends TestCase
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
-        $aggregate->collect($event1);
-        $aggregate->collect($event2);
+        $aggregate->collectEvent($event1);
+        $aggregate->collectEvent($event2);
 
         $readEvents = [];
         $aggregate->processEvents(function ($event) use (&$readEvents) {
@@ -36,15 +36,15 @@ class AggregateTest extends TestCase
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
-        $aggregate->collect($event1);
-        $aggregate->collect($event2);
+        $aggregate->collectEvent($event1);
+        $aggregate->collectEvent($event2);
 
         $readEvents = [];
         $aggregate->processEvents(function () { });
         $aggregate->processEvents(function ($event) use (&$readEvents) {
             array_push($readEvents, $event);
         });
-        $modified = $aggregate->isModified();
+        $modified = $aggregate->hasUnprocessedEvents();
 
         $expectedEvents = [];
         $this->assertSame($expectedEvents, $readEvents);
@@ -56,7 +56,7 @@ class AggregateTest extends TestCase
         $identity = new FakeIdentity(20);
         $aggregate = new FakeAggregate($identity);
 
-        $modified = $aggregate->isModified();
+        $modified = $aggregate->hasUnprocessedEvents();
 
         $this->assertFalse($modified);
     }
@@ -67,9 +67,9 @@ class AggregateTest extends TestCase
         $aggregate = new FakeAggregate($identity);
         $event = new FakeEvent();
 
-        $aggregate->collect($event);
+        $aggregate->collectEvent($event);
 
-        $modified = $aggregate->isModified();
+        $modified = $aggregate->hasUnprocessedEvents();
 
         $this->assertTrue($modified);
     }

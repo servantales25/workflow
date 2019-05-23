@@ -16,7 +16,7 @@ abstract class Aggregate extends Entity
         $this->events = new Vector();
     }
 
-    public function isModified(): bool
+    public function hasUnprocessedEvents(): bool
     {
         return !$this->events->isEmpty();
     }
@@ -28,7 +28,7 @@ abstract class Aggregate extends Entity
         $this->events->clear();
     }
 
-    protected function collect(object $event): void
+    protected function collectEvent(object $event): void
     {
         $this->events->add($event);
     }
