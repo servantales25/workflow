@@ -3,13 +3,12 @@
 namespace LuKun\Workflow\Tests\Domain\Fakes;
 
 use LuKun\Workflow\Domain\Aggregate;
-use LuKun\Workflow\Domain\IIdentity;
 
 class FakeAggregate extends Aggregate
 {
-    public function __construct(IIdentity $identity)
+    public function __construct($id)
     {
-        parent::__construct($identity);
+        parent::__construct($id);
     }
 
     public function publishChange(object $event): void

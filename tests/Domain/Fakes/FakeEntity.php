@@ -3,12 +3,11 @@
 namespace LuKun\Workflow\Tests\Domain\Fakes;
 
 use LuKun\Workflow\Domain\Entity;
-use LuKun\Workflow\Domain\IIdentity;
 
 class FakeEntity extends Entity
 {
-    public function __construct(IIdentity $identity)
+    public function __construct($id)
     {
-        parent::__construct($identity);
+        parent::__construct($id);
     }
 }

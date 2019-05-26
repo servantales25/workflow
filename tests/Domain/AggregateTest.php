@@ -4,7 +4,6 @@ namespace LuKun\Workflow\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
 use LuKun\Workflow\Tests\Domain\Fakes\FakeAggregate;
-use LuKun\Workflow\Tests\Domain\Fakes\FakeIdentity;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent2;
 
@@ -12,8 +11,8 @@ class AggregateTest extends TestCase
 {
     public function test_onChange()
     {
-        $identity = new FakeIdentity(20);
-        $aggregate = new FakeAggregate($identity);
+        $id = 1;
+        $aggregate = new FakeAggregate($id);
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
