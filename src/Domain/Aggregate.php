@@ -2,28 +2,33 @@
 
 namespace LuKun\Workflow\Domain;
 
-use LuKun\Workflow\Events\EventEmitter;
+use LuKun\Structures\Collections\Vector;
 
 abstract class Aggregate extends Entity
 {
-    /** @var EventEmitter */
-    private $eventEmitter;
+    /** @var Vector */
+    private $events;
 
-    public function __construct($id)
+    protected function __construct($id)
     {
         parent::__construct($id);
 
-        $this->eventEmitter = new EventEmitter();
+        $this->events = new Vector();
     }
 
-    /** @param callable $action - (Aggregate $aggregate, object $event): void */
-    public function onChange(callable $action): void
+    /** @param callable $handleEvent - (object $event): void */
+    public function readEvents(callable $handleEvent): void
     {
-        $this->eventEmitter->on('change', $action);
+        $this->events->walk($handleEvent);
     }
 
-    protected function publishChange(object $event): void
+    public function clearEvents(): void
     {
-        $this->eventEmitter->emit('change', $this, $event);
+        $this->events->clear();
+    }
+
+    protected function recordThat(object $event): void
+    {
+        $this->events->add($event);
     }
 }
