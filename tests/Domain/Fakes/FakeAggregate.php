@@ -11,8 +11,8 @@ class FakeAggregate extends Aggregate
         parent::__construct($id);
     }
 
-    public function recordThat(object $event): void
+    public function publishChange(object $event): void
     {
-        parent::recordThat($event);
+        parent::publishChange($event);
     }
 }

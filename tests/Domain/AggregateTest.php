@@ -9,43 +9,28 @@ use LuKun\Workflow\Tests\Events\Fakes\FakeEvent2;
 
 class AggregateTest extends TestCase
 {
-    public function test_recordThat()
+    public function test_onChange()
     {
         $id = 1;
         $aggregate = new FakeAggregate($id);
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
-        $aggregate->recordThat($event1);
-        $aggregate->recordThat($event2);
+        $onChangeArg1 = null;
+        $onChangeArg2 = null;
 
-        $readEvents = [];
-        $aggregate->readEvents(function ($event) use (&$readEvents) {
-            array_push($readEvents, $event);
+        $aggregate->onChange(function ($arggregate, $event) use (&$onChangeArg1, &$onChangeArg2) {
+            $onChangeArg1 = $arggregate;
+            $onChangeArg2 = $event;
         });
 
-        $expectedEvents = [$event1, $event2];
-        $this->assertSame($expectedEvents, $readEvents);
-    }
+        $aggregate->publishChange($event1);
 
-    public function test_clearEvents()
-    {
-        $id = 1;
-        $aggregate = new FakeAggregate($id);
-        $event1 = new FakeEvent();
-        $event2 = new FakeEvent2();
+        $this->assertSame($aggregate, $onChangeArg1);
+        $this->assertSame($event1, $onChangeArg2);
 
-        $aggregate->recordThat($event1);
-        $aggregate->recordThat($event2);
+        $aggregate->publishChange($event2);
 
-        $aggregate->clearEvents();
-
-        $readEvents = [];
-        $aggregate->readEvents(function ($event) use (&$readEvents) {
-            array_push($readEvents, $event);
-        });
-
-        $expectedEvents = [];
-        $this->assertSame($expectedEvents, $readEvents);
+        $this->assertSame($event2, $onChangeArg2);
     }
 }
