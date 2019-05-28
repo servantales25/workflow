@@ -4,7 +4,6 @@ namespace LuKun\Workflow\Commands;
 
 use LuKun\Structures\Collections\HashTable;
 use LuKun\Structures\Collections\Vector;
-use InvalidArgumentException;
 
 class Result
 {
@@ -17,14 +16,12 @@ class Result
     /** @var Vector */
     private $eventsIndex;
 
-    /**
-     * @param object[] $errors
-     * @param object[] $events
-     */
-    public function __construct(array $errors, array $events)
+    private function __construct()
     {
-        $this->_initErrors($errors);
-        $this->_initEvents($events);
+        $this->errors = new HashTable();
+        $this->errorsIndex = new Vector();
+        $this->events = new HashTable();
+        $this->eventsIndex = new Vector();
     }
 
     public function isOk(): bool
@@ -75,28 +72,28 @@ class Result
         $this->events->walkOf($event, $handleEvent);
     }
 
-    /** @param object[] $errors */
-    private function _initErrors(array $errors): void
+    private function _addError(object $error): void
     {
-        $this->errors = new HashTable();
-        $this->errorsIndex = new Vector();
-        foreach ($errors as $error) {
-            $hash = get_class($error);
-            $index = $this->errors->addTo($hash, $error);
-            $this->errorsIndex->add([$hash, $index]);
-        }
+        $hash = get_class($error);
+        $index = $this->errors->addTo($hash, $error);
+        $this->errorsIndex->add([$hash, $index]);
     }
 
-    /** @param object[] $events */
-    private function _initEvents(array $events): void
+    private function _addEvent(object $event): void
     {
-        $this->events = new HashTable();
-        $this->eventsIndex = new Vector();
-        foreach ($events as $event) {
-            $hash = get_class($event);
-            $index = $this->events->addTo($hash, $event);
-            $this->eventsIndex->add([$hash, $index]);
-        }
+        $hash = get_class($event);
+        $index = $this->events->addTo($hash, $event);
+        $this->eventsIndex->add([$hash, $index]);
+    }
+
+    private function _addResult(Result $result): void
+    {
+        $result->readErrors(function (object $error) {
+            $this->_addError($error);
+        });
+        $result->readEvents(function (object $event) {
+            $this->_addEvent($event);
+        });
     }
 
     public static function createEmpty(): Result
@@ -104,17 +101,37 @@ class Result
         return new Result([], []);
     }
 
-    public static function createFailure(object ...$errors): Result
+    public static function createFailure(?object ...$errors): Result
     {
-        if (count($errors) < 1) {
-            throw new InvalidArgumentException('There must be at least one error object when creating failure result.');
+        $result = new Result();
+        foreach ($errors as $error) {
+            if ($error !== null) {
+                $result->_addError($error);
+            }
         }
 
-        return new Result($errors, []);
+        return $result;
     }
 
-    public static function createSuccess(object ...$events): Result
+    public static function createSuccess(?object ...$events): Result
     {
-        return new Result([], $events);
+        $result = new Result();
+        foreach ($events as $event) {
+            if ($event !== null) {
+                $result->_addEvent($event);
+            }
+        }
+
+        return $result;
+    }
+
+    public static function createMerge(Result ...$results): Result
+    {
+        $_result = new Result();
+        foreach ($results as $result) {
+            $_result->_addResult($result);
+        }
+
+        return $_result;
     }
 }

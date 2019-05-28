@@ -42,9 +42,7 @@ class EventPublishingCommandBusGatewayTest extends TestCase
     {
         $command = new stdClass();
         $error = new stdClass();
-        $event1 = new stdClass();
-        $event2 = new stdClass();
-        $result = new Result([$error], [$event1, $event2]);
+        $result = Result::createFailure($error);
 
         $publishedEvents = [];
         $this->eventBus->onPublish = function ($event) use (&$publishedEvents) {
@@ -53,7 +51,7 @@ class EventPublishingCommandBusGatewayTest extends TestCase
 
         $this->gateway->commandCompleted($command, $result);
 
-        $this->assertSame([$event1, $event2], $publishedEvents);
+        $this->assertSame([], $publishedEvents);
     }
 
     public function test_commandCompleted_WithEmptyResult()

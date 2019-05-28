@@ -18,7 +18,7 @@ class Event2
 
 class ResultTest extends TestCase
 {
-    public function test_WithErrors_WithoutEvents()
+    public function test_createFailure()
     {
         $error1 = new stdClass();
         $error2 = new stdClass();
@@ -42,7 +42,7 @@ class ResultTest extends TestCase
         $this->assertSame([], $readEvents);
     }
 
-    public function test_WithoutErrors_WithEvents()
+    public function test_createSuccess()
     {
         $event1 = new stdClass();
         $event2 = new stdClass();
@@ -66,7 +66,7 @@ class ResultTest extends TestCase
         $this->assertSame([$event1, $event2], $readEvents);
     }
 
-    public function test_WithoutErrors_WithoutEvents()
+    public function test_createEmpty()
     {
         $readErrors = [];
         $readEvents = [];
@@ -87,31 +87,31 @@ class ResultTest extends TestCase
         $this->assertSame([], $readEvents);
     }
 
-    public function test_WithErrors_WithEvents()
-    {
-        $error1 = new stdClass();
-        $error2 = new stdClass();
-        $event1 = new stdClass();
-        $event2 = new stdClass();
+    // public function test_WithErrors_WithEvents()
+    // {
+    //     $error1 = new stdClass();
+    //     $error2 = new stdClass();
+    //     $event1 = new stdClass();
+    //     $event2 = new stdClass();
 
-        $readErrors = [];
-        $readEvents = [];
+    //     $readErrors = [];
+    //     $readEvents = [];
 
-        $result = new Result([$error1, $error2], [$event1, $event2]);
-        $isOk = $result->isOk();
-        $isEmpty = $result->isEmpty();
-        $result->readErrors(function ($error) use (&$readErrors) {
-            array_push($readErrors, $error);
-        });
-        $result->readEvents(function ($event) use (&$readEvents) {
-            array_push($readEvents, $event);
-        });
+    //     $result = new Result([$error1, $error2], [$event1, $event2]);
+    //     $isOk = $result->isOk();
+    //     $isEmpty = $result->isEmpty();
+    //     $result->readErrors(function ($error) use (&$readErrors) {
+    //         array_push($readErrors, $error);
+    //     });
+    //     $result->readEvents(function ($event) use (&$readEvents) {
+    //         array_push($readEvents, $event);
+    //     });
 
-        $this->assertFalse($isOk);
-        $this->assertFalse($isEmpty);
-        $this->assertSame([$error1, $error2], $readErrors);
-        $this->assertSame([$event1, $event2], $readEvents);
-    }
+    //     $this->assertFalse($isOk);
+    //     $this->assertFalse($isEmpty);
+    //     $this->assertSame([$error1, $error2], $readErrors);
+    //     $this->assertSame([$event1, $event2], $readEvents);
+    // }
 
     public function test_readErrorsOf()
     {
@@ -153,9 +153,31 @@ class ResultTest extends TestCase
         $this->assertSame([$event2], $readEventsOfEvent2);
     }
 
-    public function test_createFailure_WithoutErrors()
+    public function test_createMerge()
     {
-        $this->expectException(InvalidArgumentException::class);
-        Result::createFailure();
+        $event1 = new Event1();
+        $event2 = new Event2();
+        $error1 = new Error1();
+        $error2 = new Error2();
+
+        $result1 = Result::createSuccess($event1, $event2);
+        $result2 = Result::createFailure($error1, $error2);
+        $result3 = Result::createSuccess($event1, $event2);
+        $result4 = Result::createFailure($error1, $error2);
+
+        $result = Result::createMerge($result1, $result2, $result3, $result4);
+
+        $readEvents = [];
+        $readErrors = [];
+
+        $result->readEvents(function ($event) use (&$readEvents) {
+            array_push($readEvents, $event);
+        });
+        $result->readErrors(function ($error) use (&$readErrors) {
+            array_push($readErrors, $error);
+        });
+
+        $this->assertSame([$event1, $event2, $event1, $event2], $readEvents);
+        $this->assertSame([$error1, $error2, $error1, $error2], $readErrors);
     }
 }
