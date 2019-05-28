@@ -16,14 +16,14 @@ abstract class Aggregate extends Entity
         $this->eventEmitter = new EventEmitter();
     }
 
-    /** @param callable $action - (Aggregate $aggregate, object $event): void */
+    /** @param callable $action - (object $event): void */
     public function onChange(callable $action): void
     {
         $this->eventEmitter->on('change', $action);
     }
 
-    protected function publishChange(object $event): void
+    protected function submit(object $event): void
     {
-        $this->eventEmitter->emit('change', $this, $event);
+        $this->eventEmitter->emit('change', $event);
     }
 }
