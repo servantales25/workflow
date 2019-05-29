@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "lukun/structures",
-            "version": "v0.1.0",
+            "version": "v0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/servantales25/structures.git",
-                "reference": "90b981fecd7d56a072d36feab88d7486f3590fea"
+                "reference": "fd8ee1b703fd0fea276e36f6bf4060b25013fb08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/servantales25/structures/zipball/90b981fecd7d56a072d36feab88d7486f3590fea",
-                "reference": "90b981fecd7d56a072d36feab88d7486f3590fea",
+                "url": "https://api.github.com/repos/servantales25/structures/zipball/fd8ee1b703fd0fea276e36f6bf4060b25013fb08",
+                "reference": "fd8ee1b703fd0fea276e36f6bf4060b25013fb08",
                 "shasum": ""
             },
             "require-dev": {
@@ -40,10 +40,10 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/servantales25/structures/tree/v1",
+                "source": "https://github.com/servantales25/structures/tree/v0.1.1",
                 "issues": "https://github.com/servantales25/structures/issues"
             },
-            "time": "2019-05-22T08:50:37+00:00"
+            "time": "2019-05-24T11:17:08+00:00"
         }
     ],
     "packages-dev": [
@@ -722,16 +722,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.1.5",
+            "version": "8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "01392d4b5878aa617e8d9bc7a529e5febc8fe956"
+                "reference": "e3c9da6e645492c461e0a11eca117f83f4f4c840"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/01392d4b5878aa617e8d9bc7a529e5febc8fe956",
-                "reference": "01392d4b5878aa617e8d9bc7a529e5febc8fe956",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e3c9da6e645492c461e0a11eca117f83f4f4c840",
+                "reference": "e3c9da6e645492c461e0a11eca117f83f4f4c840",
                 "shasum": ""
             },
             "require": {
@@ -800,7 +800,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-05-14T04:57:31+00:00"
+            "time": "2019-05-28T11:53:42+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
