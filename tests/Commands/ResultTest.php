@@ -3,25 +3,21 @@
 namespace LuKun\Workflow\Tests\Commands;
 
 use PHPUnit\Framework\TestCase;
-use stdClass;
 use LuKun\Workflow\Commands\Result;
-use InvalidArgumentException;
+use LuKun\Workflow\Tests\Events\Fakes\FakeEvent;
+use LuKun\Workflow\Tests\Events\Fakes\FakeEvent2;
 
 class Error1
 { }
 class Error2
-{ }
-class Event1
-{ }
-class Event2
 { }
 
 class ResultTest extends TestCase
 {
     public function test_createFailure()
     {
-        $error1 = new stdClass();
-        $error2 = new stdClass();
+        $error1 = new Error1();
+        $error2 = new Error1();
 
         $readErrors = [];
         $readEvents = [];
@@ -42,10 +38,66 @@ class ResultTest extends TestCase
         $this->assertSame([], $readEvents);
     }
 
+    public function test_countErrors()
+    {
+        $error1 = new Error1();
+        $error2 = new Error1();
+
+        $result = Result::createFailure($error1, $error2);
+
+        $this->assertSame(2, $result->countErrors());
+        $this->assertSame(2, $result->countErrorsOf(Error1::class));
+        $this->assertSame(0, $result->countErrorsOf(Error2::class));
+    }
+
+    public function test_countEvents()
+    {
+        $event1 = new FakeEvent();
+        $event2 = new FakeEvent();
+
+        $result = Result::createSuccess($event1, $event2);
+
+        $this->assertSame(2, $result->countEvents());
+        $this->assertSame(2, $result->countEventsOf(FakeEvent::class));
+        $this->assertSame(0, $result->countEventsOf(FakeEvent2::class));
+    }
+
+    public function getError()
+    {
+        $error1 = new Error1();
+        $error2 = new Error2();
+        $error3 = new Error1();
+        $error4 = new Error1();
+
+        $result = Result::createFailure($error1, $error2, $error3, $error4);
+
+        $this->assertSame($error1, $result->getError(Error1::class, 1));
+        $this->assertSame($error3, $result->getError(Error1::class, 2));
+        $this->assertSame($error4, $result->getError(Error1::class, 3));
+        $this->assertSame($error2, $result->getError(Error2::class, 1));
+        $this->assertNull($result->getError(Error2::class, 2));
+    }
+
+    public function getEvent()
+    {
+        $event1 = new FakeEvent();
+        $event2 = new FakeEvent2();
+        $event3 = new FakeEvent();
+        $event4 = new FakeEvent();
+
+        $result = Result::createFailure($event1, $event2, $event3, $event4);
+
+        $this->assertSame($event1, $result->getEvent(FakeEvent::class, 1));
+        $this->assertSame($event3, $result->getEvent(FakeEvent::class, 2));
+        $this->assertSame($event4, $result->getEvent(FakeEvent::class, 3));
+        $this->assertSame($event2, $result->getEvent(FakeEvent2::class, 1));
+        $this->assertNull($result->getEvent(FakeEvent2::class, 2));
+    }
+
     public function test_createSuccess()
     {
-        $event1 = new stdClass();
-        $event2 = new stdClass();
+        $event1 = new FakeEvent();
+        $event2 = new FakeEvent2();
 
         $readErrors = [];
         $readEvents = [];
@@ -135,17 +187,17 @@ class ResultTest extends TestCase
 
     public function test_readEventsOf()
     {
-        $event1 = new Event1();
-        $event2 = new Event2();
+        $event1 = new FakeEvent();
+        $event2 = new FakeEvent2();
 
         $readEventsOfEvent1 = [];
         $readEventsOfEvent2 = [];
 
         $result = Result::createSuccess($event1, $event2);
-        $result->readEventsOf(Event1::class, function ($error) use (&$readEventsOfEvent1) {
+        $result->readEventsOf(FakeEvent::class, function ($error) use (&$readEventsOfEvent1) {
             array_push($readEventsOfEvent1, $error);
         });
-        $result->readEventsOf(Event2::class, function ($error) use (&$readEventsOfEvent2) {
+        $result->readEventsOf(FakeEvent2::class, function ($error) use (&$readEventsOfEvent2) {
             array_push($readEventsOfEvent2, $error);
         });
 
@@ -155,8 +207,8 @@ class ResultTest extends TestCase
 
     public function test_createMerge()
     {
-        $event1 = new Event1();
-        $event2 = new Event2();
+        $event1 = new FakeEvent();
+        $event2 = new FakeEvent2();
         $error1 = new Error1();
         $error2 = new Error2();
 

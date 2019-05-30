@@ -44,6 +44,36 @@ class Result
         return $this->events->containsAnyOf($event);
     }
 
+    public function countErrors(): int
+    {
+        return $this->errors->getLength();
+    }
+
+    public function countEvents(): int
+    {
+        return $this->events->getLength();
+    }
+
+    public function countErrorsOf(string $error): int
+    {
+        return $this->errors->getLengthOf($error);
+    }
+
+    public function countEventsOf(string $event): int
+    {
+        return $this->events->getLengthOf($event);
+    }
+
+    public function getError(string $error, int $position = 1): ?object
+    {
+        return $this->errors->get($error, $position - 1);
+    }
+
+    public function getEvent(string $event, int $position = 1): ?object
+    {
+        return $this->events->get($event, $position - 1);
+    }
+
     public function readErrors(callable $handleError): void
     {
         $this->errorsIndex->walk(function (array $hash_index) use ($handleError) {
