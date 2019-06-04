@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "lukun/structures": "*"
+        "lukun/structures": "*",
+        "ramsey/uuid": "^3.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1"
@@ -25,5 +26,8 @@
             "LuKun\\Workflow\\": "src/",
             "LuKun\\Workflow\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit --bootstrap ./vendor/autoload.php ./tests"
     }
 }
