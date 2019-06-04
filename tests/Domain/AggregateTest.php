@@ -3,21 +3,22 @@
 namespace LuKun\Workflow\Tests\Domain;
 
 use PHPUnit\Framework\TestCase;
-use LuKun\Workflow\Tests\Domain\Fakes\FakeAggregate;
+use LuKun\Workflow\Domain\IntId;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent2;
+use LuKun\Workflow\Tests\Domain\Fakes\FakeAggregate;
 
 class AggregateTest extends TestCase
 {
     public function test_onChange()
     {
-        $id = 1;
+        $id = new IntId(1);
         $aggregate = new FakeAggregate($id);
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
         $onChangeArg = null;
-        $aggregate->onChange(function ($event) use (&$onChangeArg) {
+        $aggregate->onChange(function (object $event) use (&$onChangeArg) {
             $onChangeArg = $event;
         });
 

@@ -4,16 +4,15 @@ namespace LuKun\Workflow\Domain;
 
 abstract class Entity
 {
-    /** @var mixed */
+    /** @var IIdentity */
     private $id;
 
-    protected function __construct($id)
+    protected function __construct(IIdentity $id)
     {
         $this->id = $id;
     }
 
-    /** @return mixed */
-    public function getId()
+    public function getId(): IIdentity
     {
         return $this->id;
     }
@@ -21,7 +20,7 @@ abstract class Entity
     public function equalsTo(Entity $entity): bool
     {
         $class = get_class($this);
-        return $entity instanceof $class
-            && $this->id == $entity->id;
+
+        return ($entity instanceof $class) && $this->id->equalsTo($entity->id);
     }
 }

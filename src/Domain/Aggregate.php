@@ -9,7 +9,7 @@ abstract class Aggregate extends Entity
     /** @var EventEmitter */
     private $eventEmitter;
 
-    public function __construct($id)
+    public function __construct(IIdentity $id)
     {
         parent::__construct($id);
 
