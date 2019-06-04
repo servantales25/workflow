@@ -5,6 +5,7 @@ namespace LuKun\Workflow\Tests\Transactions;
 use PHPUnit\Framework\TestCase;
 use LuKun\Workflow\Tests\Transactions\Fakes\FakeTransactionManager;
 use stdClass;
+use Exception;
 use LuKun\Workflow\Commands\Result;
 use LuKun\Workflow\Transactions\TransactionalCommandBusGateway;
 use LuKun\Workflow\Transactions\AnotherCommandTransactionInProgressException;
@@ -81,7 +82,7 @@ class TransactionCommandBusGatewayTest extends TestCase
     public function test_commandCompleted_FailedResult()
     {
         $command = new stdClass();
-        $error = new stdClass();
+        $error = new Exception();
         $result = Result::createFailure($error);
 
         $this->gateway->commandReceived($command);

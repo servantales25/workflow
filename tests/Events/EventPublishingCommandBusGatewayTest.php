@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEventBus;
 use LuKun\Workflow\Commands\Result;
 use stdClass;
+use Exception;
 use LuKun\Workflow\Events\EventPublishingCommandBusGateway;
 
 class EventPublishingCommandBusGatewayTest extends TestCase
@@ -41,7 +42,7 @@ class EventPublishingCommandBusGatewayTest extends TestCase
     public function test_commandCompleted_WithFailedResult()
     {
         $command = new stdClass();
-        $error = new stdClass();
+        $error = new Exception();
         $result = Result::createFailure($error);
 
         $publishedEvents = [];

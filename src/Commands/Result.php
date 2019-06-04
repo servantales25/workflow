@@ -4,6 +4,7 @@ namespace LuKun\Workflow\Commands;
 
 use LuKun\Structures\Collections\HashTable;
 use LuKun\Structures\Collections\Vector;
+use Throwable;
 
 class Result
 {
@@ -64,16 +65,17 @@ class Result
         return $this->events->getLengthOf($event);
     }
 
-    public function getError(string $error, int $position = 1): ?object
+    public function getError(string $error, int $offset = 0): ?Throwable
     {
-        return $this->errors->get($error, $position - 1);
+        return $this->errors->get($error, $offset);
     }
 
-    public function getEvent(string $event, int $position = 1): ?object
+    public function getEvent(string $event, int $offset = 0): ?object
     {
-        return $this->events->get($event, $position - 1);
+        return $this->events->get($event, $offset);
     }
 
+    /** @param callable $handleError - (Throwable $error): void */
     public function readErrors(callable $handleError): void
     {
         $this->errorsIndex->walk(function (array $hash_index) use ($handleError) {
@@ -83,11 +85,13 @@ class Result
         });
     }
 
+    /** @param callable $handleError - (Throwable $error): void */
     public function readErrorsOf(string $error, callable $handleError): void
     {
         $this->errors->walkOf($error, $handleError);
     }
 
+    /** @param callable $handleEvent - (object $event): void */
     public function readEvents(callable $handleEvent): void
     {
         $this->eventsIndex->walk(function (array $hash_index) use ($handleEvent) {
@@ -97,12 +101,13 @@ class Result
         });
     }
 
+    /** @param callable $handleEvent - (object $event): void */
     public function readEventsOf(string $event, callable $handleEvent): void
     {
         $this->events->walkOf($event, $handleEvent);
     }
 
-    private function _addError(object $error): void
+    private function _addError(Throwable $error): void
     {
         $hash = get_class($error);
         $index = $this->errors->addTo($hash, $error);
@@ -131,7 +136,7 @@ class Result
         return new Result([], []);
     }
 
-    public static function createFailure(?object ...$errors): Result
+    public static function createFailure(?Throwable ...$errors): Result
     {
         $result = new Result();
         foreach ($errors as $error) {

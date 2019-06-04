@@ -6,18 +6,16 @@ use PHPUnit\Framework\TestCase;
 use LuKun\Workflow\Commands\Result;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent;
 use LuKun\Workflow\Tests\Events\Fakes\FakeEvent2;
-
-class Error1
-{ }
-class Error2
-{ }
+use Exception;
+use RuntimeException;
+use Throwable;
 
 class ResultTest extends TestCase
 {
     public function test_createFailure()
     {
-        $error1 = new Error1();
-        $error2 = new Error1();
+        $error1 = new Exception();
+        $error2 = new Exception();
 
         $readErrors = [];
         $readEvents = [];
@@ -25,10 +23,10 @@ class ResultTest extends TestCase
         $result = Result::createFailure($error1, $error2);
         $isOk = $result->isOk();
         $isEmpty = $result->isEmpty();
-        $result->readErrors(function ($error) use (&$readErrors) {
+        $result->readErrors(function (Throwable $error) use (&$readErrors) {
             array_push($readErrors, $error);
         });
-        $result->readEvents(function ($event) use (&$readEvents) {
+        $result->readEvents(function (object $event) use (&$readEvents) {
             array_push($readEvents, $event);
         });
 
@@ -40,14 +38,14 @@ class ResultTest extends TestCase
 
     public function test_countErrors()
     {
-        $error1 = new Error1();
-        $error2 = new Error1();
+        $error1 = new Exception();
+        $error2 = new Exception();
 
         $result = Result::createFailure($error1, $error2);
 
         $this->assertSame(2, $result->countErrors());
-        $this->assertSame(2, $result->countErrorsOf(Error1::class));
-        $this->assertSame(0, $result->countErrorsOf(Error2::class));
+        $this->assertSame(2, $result->countErrorsOf(Exception::class));
+        $this->assertSame(0, $result->countErrorsOf(RuntimeException::class));
     }
 
     public function test_countEvents()
@@ -64,18 +62,18 @@ class ResultTest extends TestCase
 
     public function getError()
     {
-        $error1 = new Error1();
-        $error2 = new Error2();
-        $error3 = new Error1();
-        $error4 = new Error1();
+        $error1 = new Exception();
+        $error2 = new RuntimeException();
+        $error3 = new Exception();
+        $error4 = new Exception();
 
         $result = Result::createFailure($error1, $error2, $error3, $error4);
 
-        $this->assertSame($error1, $result->getError(Error1::class, 1));
-        $this->assertSame($error3, $result->getError(Error1::class, 2));
-        $this->assertSame($error4, $result->getError(Error1::class, 3));
-        $this->assertSame($error2, $result->getError(Error2::class, 1));
-        $this->assertNull($result->getError(Error2::class, 2));
+        $this->assertSame($error1, $result->getError(Exception::class, 1));
+        $this->assertSame($error3, $result->getError(Exception::class, 2));
+        $this->assertSame($error4, $result->getError(Exception::class, 3));
+        $this->assertSame($error2, $result->getError(RuntimeException::class, 1));
+        $this->assertNull($result->getError(RuntimeException::class, 2));
     }
 
     public function getEvent()
@@ -105,10 +103,10 @@ class ResultTest extends TestCase
         $result = Result::createSuccess($event1, $event2);
         $isOk = $result->isOk();
         $isEmpty = $result->isEmpty();
-        $result->readErrors(function ($error) use (&$readErrors) {
+        $result->readErrors(function (Throwable $error) use (&$readErrors) {
             array_push($readErrors, $error);
         });
-        $result->readEvents(function ($event) use (&$readEvents) {
+        $result->readEvents(function (object $event) use (&$readEvents) {
             array_push($readEvents, $event);
         });
 
@@ -126,10 +124,10 @@ class ResultTest extends TestCase
         $result = Result::createEmpty();
         $isOk = $result->isOk();
         $isEmpty = $result->isEmpty();
-        $result->readErrors(function ($error) use (&$readErrors) {
+        $result->readErrors(function (Throwable $error) use (&$readErrors) {
             array_push($readErrors, $error);
         });
-        $result->readEvents(function ($event) use (&$readEvents) {
+        $result->readEvents(function (object $event) use (&$readEvents) {
             array_push($readEvents, $event);
         });
 
@@ -167,17 +165,17 @@ class ResultTest extends TestCase
 
     public function test_readErrorsOf()
     {
-        $error1 = new Error1();
-        $error2 = new Error2();
+        $error1 = new Exception();
+        $error2 = new RuntimeException();
 
         $readErrorsOfError1 = [];
         $readErrorsOfError2 = [];
 
         $result = Result::createFailure($error1, $error2);
-        $result->readErrorsOf(Error1::class, function ($error) use (&$readErrorsOfError1) {
+        $result->readErrorsOf(Exception::class, function (Throwable $error) use (&$readErrorsOfError1) {
             array_push($readErrorsOfError1, $error);
         });
-        $result->readErrorsOf(Error2::class, function ($error) use (&$readErrorsOfError2) {
+        $result->readErrorsOf(RuntimeException::class, function (Throwable $error) use (&$readErrorsOfError2) {
             array_push($readErrorsOfError2, $error);
         });
 
@@ -194,11 +192,11 @@ class ResultTest extends TestCase
         $readEventsOfEvent2 = [];
 
         $result = Result::createSuccess($event1, $event2);
-        $result->readEventsOf(FakeEvent::class, function ($error) use (&$readEventsOfEvent1) {
-            array_push($readEventsOfEvent1, $error);
+        $result->readEventsOf(FakeEvent::class, function (object $event) use (&$readEventsOfEvent1) {
+            array_push($readEventsOfEvent1, $event);
         });
-        $result->readEventsOf(FakeEvent2::class, function ($error) use (&$readEventsOfEvent2) {
-            array_push($readEventsOfEvent2, $error);
+        $result->readEventsOf(FakeEvent2::class, function (object $event) use (&$readEventsOfEvent2) {
+            array_push($readEventsOfEvent2, $event);
         });
 
         $this->assertSame([$event1], $readEventsOfEvent1);
@@ -209,8 +207,8 @@ class ResultTest extends TestCase
     {
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
-        $error1 = new Error1();
-        $error2 = new Error2();
+        $error1 = new Exception();
+        $error2 = new RuntimeException();
 
         $result1 = Result::createSuccess($event1, $event2);
         $result2 = Result::createFailure($error1, $error2);
@@ -222,10 +220,10 @@ class ResultTest extends TestCase
         $readEvents = [];
         $readErrors = [];
 
-        $result->readEvents(function ($event) use (&$readEvents) {
+        $result->readEvents(function (object $event) use (&$readEvents) {
             array_push($readEvents, $event);
         });
-        $result->readErrors(function ($error) use (&$readErrors) {
+        $result->readErrors(function (Throwable $error) use (&$readErrors) {
             array_push($readErrors, $error);
         });
 
