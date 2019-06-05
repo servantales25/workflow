@@ -26,6 +26,8 @@ abstract class Entity
                 return $this->id === $entity->id;
             } else if (method_exists($this->id, 'equalsTo')) {
                 return $this->id->equalsTo($entity->id);
+            } else if (method_exists($this->id, 'equals')) {
+                return $this->id->equals($entity->id);
             } else {
                 return $this->id == $entity->id;
             }
