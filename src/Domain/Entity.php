@@ -21,7 +21,16 @@ abstract class Entity
     public function equalsTo(Entity $entity): bool
     {
         $class = get_class($this);
-        return $entity instanceof $class
-            && $this->id == $entity->id;
+        if ($entity instanceof $class) {
+            if (is_scalar($this->id)) {
+                return $this->id === $entity->id;
+            } else if (method_exists($this->id, 'equalsTo')) {
+                return $this->id->equalsTo($entity->id);
+            } else {
+                return $this->id == $entity->id;
+            }
+        }
+
+        return false;
     }
 }
