@@ -12,11 +12,15 @@
         {
             "type": "vcs",
             "url": "https://github.com/servantales25/structures.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/servantales25/events.git"
         }
     ],
     "require": {
-        "lukun/structures": "*",
-        "ramsey/uuid": "^3.8"
+        "lukun/structures": "^0.1",
+        "lukun/events": "^0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1"
