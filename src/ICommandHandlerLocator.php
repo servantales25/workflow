@@ -4,6 +4,6 @@ namespace LuKun\Workflow;
 
 interface ICommandHandlerLocator
 {
-    /** @return null|callable - (object $command): Result */
-    function findCommandHandlerFor(string $command): ?callable;
+    /** @return null|callable - (object $command): void */
+    public function findCommandHandlerFor(string $command): ?callable;
 }

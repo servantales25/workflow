@@ -2,23 +2,46 @@
 
 namespace LuKun\Workflow;
 
-class EventBus implements IEventBus
-{
-    /** @var IEventHandlerLocator */
-    private $handlerLocator;
+use LuKun\Events\EventEmitter;
+use Throwable;
 
-    public function __construct(IEventHandlerLocator $handlerLocator)
+class EventBus extends EventEmitter
+{
+    /** (object $event): void */
+    public const EVENT_RECEIVED = 'eventReceived';
+    /** (object $event, int $listenerIndex, Throwable $exception): void */
+    public const EVENT_HANDLING_FAILED = 'eventPublishingFailed';
+    /** (object $event, int $listenerIndex): void */
+    public const EVENT_PUBLISHED = 'eventPublished';
+
+    /** @var IEventListenersLocator */
+    private $listenersLocator;
+
+    public function __construct(IEventListenersLocator $listenersLocator)
     {
-        $this->handlerLocator = $handlerLocator;
+        parent::__construct();
+
+        $this->listenersLocator = $listenersLocator;
     }
 
     public function publish(object $event): void
     {
+        $this->submit(self::EVENT_RECEIVED, $event);
+
         $eventClass = get_class($event);
-        /** @var callable[] $handlers */
-        $handlers = $this->handlerLocator->findEventHandlersFor($eventClass);
-        foreach ($handlers as $handler) {
-            $handler($event);
+        /** @var callable[] $listeners */
+        $listeners = $this->listenersLocator->findEventListenersFor($eventClass);
+        for ($i = 0; $i < count($listeners); ++$i) {
+            $listener = $listeners[$i];
+            try {
+                call_user_func($listener, $event);
+            } catch (Throwable $e) {
+                $this->submit(self::EVENT_HANDLING_FAILED, $event, $i, $e);
+
+                continue;
+            }
+
+            $this->submit(self::EVENT_PUBLISHED, $event, $i);
         }
     }
 }

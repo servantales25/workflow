@@ -3,91 +3,77 @@
 namespace LuKun\Workflow\Tests;
 
 use PHPUnit\Framework\TestCase;
-use LuKun\Workflow\EventHandlerLocator;
+use LuKun\Workflow\IEventListenersLocator;
 use LuKun\Workflow\EventBus;
 use LuKun\Workflow\Tests\Fakes\FakeEvent;
 use LuKun\Workflow\Tests\Fakes\FakeEvent2;
 
 class EventBusTest extends TestCase
 {
-    /** @var EventHandlerLocator */
+    /** @var IEventListenersLocator */
     private $locator;
     /** @var EventBus */
     private $eventBus;
 
     protected function setUp(): void
     {
-        $this->locator = new EventHandlerLocator();
+        $this->locator = $this->createMock(IEventListenersLocator::class);
         $this->eventBus = new EventBus($this->locator);
     }
 
-    public function test_publish_WithHandlers_MultipleEvents()
+    public function test_publish_WithListeners()
     {
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
-        $handler1event = null;
-        $handler2event = null;
-        $handler3event = null;
-        $handler4event = null;
+        $listenerEvents = [];
+        $this->locator->method('findEventListenersFor')
+            ->withConsecutive($event1, $event2)
+            ->willReturn([function ($event) use (&$listenerEvents) {
+                $listenerEvents[] = $event;
+            }]);
 
-        $this->locator->registerHandler(FakeEvent::class, function ($event1) use (&$handler1event) {
-            $handler1event = $event1;
+        $receivedEvents = [];
+        $this->eventBus->on(EventBus::EVENT_RECEIVED, function ($event) use (&$receivedEvents) {
+            $receivedEvents[] = $event;
         });
-        $this->locator->registerHandler(FakeEvent::class, function ($event1) use (&$handler2event) {
-            $handler2event = $event1;
-        });
-        $this->locator->registerHandler(FakeEvent2::class, function ($event) use (&$handler3event) {
-            $handler3event = $event;
-        });
-        $this->locator->registerHandler(FakeEvent2::class, function ($event) use (&$handler4event) {
-            $handler4event = $event;
+
+        $publishedEvents = [];
+        $this->eventBus->on(EventBus::EVENT_PUBLISHED, function ($event, $listenerIndex) use (&$publishedEvents) {
+            $publishedEvents[] = $event;
         });
 
         $this->eventBus->publish($event1);
-
-        $this->assertSame($event1, $handler1event);
-        $this->assertSame($event1, $handler2event);
-        $this->assertNull($handler3event);
-        $this->assertNull($handler4event);
-
         $this->eventBus->publish($event2);
 
-        $this->assertSame($event1, $handler1event);
-        $this->assertSame($event1, $handler2event);
-        $this->assertSame($event2, $handler3event);
-        $this->assertSame($event2, $handler4event);
+        $this->assertSame([$event1, $event2], $listenerEvents);
+        $this->assertSame([$event1, $event2], $receivedEvents);
+        $this->assertSame([$event1, $event2], $publishedEvents);
     }
 
-    public function test_publish_WithoutHandlers_MultipleEvents()
+    public function test_publish_WithoutListeners()
     {
         $event1 = new FakeEvent();
         $event2 = new FakeEvent2();
 
-        $handler1event = null;
-        $handler2event = null;
-        $handler3event = null;
-        $handler4event = null;
+        $this->locator->method('findEventListenersFor')
+            ->withConsecutive($event1, $event2)
+            ->willReturn([]);
 
-        $this->locator->registerHandler(FakeEvent2::class, function ($event) use (&$handler3event) {
-            $handler3event = $event;
+        $receivedEvents = [];
+        $this->eventBus->on(EventBus::EVENT_RECEIVED, function ($event) use (&$receivedEvents) {
+            $receivedEvents[] = $event;
         });
-        $this->locator->registerHandler(FakeEvent2::class, function ($event) use (&$handler4event) {
-            $handler4event = $event;
+
+        $publishedEvents = [];
+        $this->eventBus->on(EventBus::EVENT_PUBLISHED, function ($event, $listenerIndex) use (&$publishedEvents) {
+            $publishedEvents[] = $event;
         });
 
         $this->eventBus->publish($event1);
-
-        $this->assertNull($handler1event);
-        $this->assertNull($handler2event);
-        $this->assertNull($handler3event);
-        $this->assertNull($handler4event);
-
         $this->eventBus->publish($event2);
 
-        $this->assertNull($handler1event);
-        $this->assertNull($handler2event);
-        $this->assertSame($event2, $handler3event);
-        $this->assertSame($event2, $handler4event);
+        $this->assertSame([$event1, $event2], $receivedEvents);
+        $this->assertSame([], $publishedEvents);
     }
 }

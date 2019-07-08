@@ -3,51 +3,51 @@
 namespace LuKun\Workflow\Tests;
 
 use PHPUnit\Framework\TestCase;
-use LuKun\Workflow\EventHandlerLocator;
+use LuKun\Workflow\EventListenersLocator;
 
-class EventHandlerLocatorTest extends TestCase
+class EventListenersLocatorTest extends TestCase
 {
-    /** @var EventHandlerLocator */
+    /** @var EventListenersLocator */
     private $locator;
 
     protected function setUp(): void
     {
-        $this->locator = new EventHandlerLocator();
+        $this->locator = new EventListenersLocator();
     }
 
-    public function test_WithoutHandlers()
+    public function test_WithoutListeners()
     {
         $event = 'test';
 
-        $foundHandlers = $this->locator->findEventHandlersFor($event);
+        $foundListeners = $this->locator->findEventListenersFor($event);
 
-        $this->assertSame([], $foundHandlers);
+        $this->assertSame([], $foundListeners);
     }
 
-    public function test_WithHandlers_KnownCommand()
+    public function test_WithListeners_KnownCommand()
     {
         $event = 'test';
-        $handler1 = function () { };
-        $handler2 = function () { };
+        $listener1 = function () { };
+        $listener2 = function () { };
 
-        $this->locator->registerHandler($event, $handler1);
-        $this->locator->registerHandler($event, $handler2);
+        $this->locator->registerListener($event, $listener1);
+        $this->locator->registerListener($event, $listener2);
 
-        $foundHandlers = $this->locator->findEventHandlersFor($event);
+        $foundListeners = $this->locator->findEventListenersFor($event);
 
-        $this->assertSame([$handler1, $handler2], $foundHandlers);
+        $this->assertSame([$listener1, $listener2], $foundListeners);
     }
 
-    public function test_WithHandlers_UnknownCommand()
+    public function test_WithListeners_UnknownCommand()
     {
         $event1 = 'test';
         $event2 = 'test2';
-        $handler1 = function () { };
+        $listener1 = function () { };
 
-        $this->locator->registerHandler($event1, $handler1);
+        $this->locator->registerListener($event1, $listener1);
 
-        $foundHandlers = $this->locator->findEventHandlersFor($event2);
+        $foundListeners = $this->locator->findEventListenersFor($event2);
 
-        $this->assertSame([], $foundHandlers);
+        $this->assertSame([], $foundListeners);
     }
 }
