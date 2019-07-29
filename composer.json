@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "lukun/events": "^0.2"
+        "lukun/events": "^0.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1"

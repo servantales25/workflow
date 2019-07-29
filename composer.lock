@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "455966c97c1ca263a5bd44c2bb4c0985",
+    "content-hash": "d88f3e21511787d6e0b85eb0106f4b79",
     "packages": [
         {
             "name": "lukun/events",
-            "version": "v0.2",
+            "version": "v0.3",
             "source": {
                 "type": "git",
-                "url": "../Events/",
-                "reference": "d340216134f9faeedd4b94bfb12dcb291ac1c634"
+                "url": "https://github.com/servantales25/events.git",
+                "reference": "94c2277fab609abfc02237fe62a69c6b9f4256b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/servantales25/events/zipball/94c2277fab609abfc02237fe62a69c6b9f4256b3",
+                "reference": "94c2277fab609abfc02237fe62a69c6b9f4256b3",
+                "shasum": ""
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.1"
@@ -38,7 +44,11 @@
                     "email": "lukaskun@seznam.cz"
                 }
             ],
-            "time": "2019-07-05T15:09:20+00:00"
+            "support": {
+                "source": "https://github.com/servantales25/events/tree/v0.3",
+                "issues": "https://github.com/servantales25/events/issues"
+            },
+            "time": "2019-07-28T09:02:20+00:00"
         }
     ],
     "packages-dev": [
