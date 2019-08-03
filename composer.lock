@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d88f3e21511787d6e0b85eb0106f4b79",
+    "content-hash": "09d368a99fef820a2acb496f15ae1257",
     "packages": [
         {
             "name": "lukun/events",
-            "version": "v0.3",
+            "version": "v0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/servantales25/events.git",
-                "reference": "94c2277fab609abfc02237fe62a69c6b9f4256b3"
+                "reference": "ee07b12c04db43dc360377706f0c618428bb23f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/servantales25/events/zipball/94c2277fab609abfc02237fe62a69c6b9f4256b3",
-                "reference": "94c2277fab609abfc02237fe62a69c6b9f4256b3",
+                "url": "https://api.github.com/repos/servantales25/events/zipball/ee07b12c04db43dc360377706f0c618428bb23f5",
+                "reference": "ee07b12c04db43dc360377706f0c618428bb23f5",
                 "shasum": ""
             },
             "require-dev": {
@@ -45,10 +45,10 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/servantales25/events/tree/v0.3",
+                "source": "https://github.com/servantales25/events/tree/v0.4",
                 "issues": "https://github.com/servantales25/events/issues"
             },
-            "time": "2019-07-28T09:02:20+00:00"
+            "time": "2019-08-03T16:01:36+00:00"
         }
     ],
     "packages-dev": [
